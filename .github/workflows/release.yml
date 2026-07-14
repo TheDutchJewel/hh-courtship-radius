@@ -16,7 +16,7 @@ jobs:
       - name: Build release archive
         shell: bash
         run: |
-          module_name="hh-module-template"
+          module_name="hh-courtship-radius"
           version="${GITHUB_REF_NAME#v}"
           git archive --format=zip --prefix="${module_name}/" --output="${module_name}-${version}.zip" HEAD
           sha256sum "${module_name}-${version}.zip" > "${module_name}-${version}.zip.sha256"

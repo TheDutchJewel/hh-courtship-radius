@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: hh module template for webtrees 2\n"
+"Project-Id-Version: hh-courtship-radius 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-11 12:00+0200\n"
 "PO-Revision-Date: 2026-07-11 12:00+0200\n"
@@ -18,9 +18,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 
-msgid "HH module template"
-msgstr "HH-Modulvorlage"
+msgid "Courtship radius"
+msgstr "Balzradius"
 
-msgid "A reusable starting point for a webtrees custom module."
-msgstr "Eine wiederverwendbare Grundlage für ein webtrees-Erweiterungsmodul."
-
+msgid "Analyse the geographic courtship radius of selected families over time."
+msgstr "Analyse des geografischen Balzradius ausgewählter Familien im Zeitverlauf."
