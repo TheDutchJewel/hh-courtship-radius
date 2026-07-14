@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hh-courtship-radius 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-15 01:48+0200\n"
+"POT-Creation-Date: 2026-07-15 01:58+0200\n"
 "PO-Revision-Date: 2026-07-15 02:00+0200\n"
 "Last-Translator: Hermann Hartenthaler\n"
 "Language-Team: \n"
@@ -31,105 +31,105 @@ msgid "Analyse the geographic courtship radius of selected families over time."
 msgstr ""
 "Analyse des geografischen Balzradius ausgewählter Familien im Zeitverlauf."
 
-#: .\src\CourtshipRadiusModule.php:159 .\resources\views\chart.phtml:134
-#: .\resources\views\chart.phtml:145
+#: .\src\CourtshipRadiusModule.php:156 .\resources\views\chart.phtml:131
+#: .\resources\views\chart.phtml:142
 msgid "Family"
 msgstr "Familie"
 
-#: .\src\CourtshipRadiusModule.php:160 .\resources\views\chart.phtml:145
-#: .\resources\views\chart.phtml:152
+#: .\src\CourtshipRadiusModule.php:157 .\resources\views\chart.phtml:142
+#: .\resources\views\chart.phtml:149
 msgid "Person"
 msgstr "Person"
 
-#: .\src\CourtshipRadiusModule.php:161 .\src\CourtshipRadiusModule.php:189
+#: .\src\CourtshipRadiusModule.php:158 .\src\CourtshipRadiusModule.php:186
 msgid "Sex"
 msgstr "Geschlecht"
 
-#: .\src\CourtshipRadiusModule.php:162
+#: .\src\CourtshipRadiusModule.php:159
 msgid "Partner"
 msgstr "Partner"
 
-#: .\src\CourtshipRadiusModule.php:163 .\resources\views\chart.phtml:152
+#: .\src\CourtshipRadiusModule.php:160 .\resources\views\chart.phtml:149
 msgid "Marriage year"
 msgstr "Heiratsjahr"
 
-#: .\src\CourtshipRadiusModule.php:164 .\src\CourtshipRadiusModule.php:221
-#: .\resources\views\chart.phtml:152 .\resources\views\cross-table.phtml:14
+#: .\src\CourtshipRadiusModule.php:161 .\src\CourtshipRadiusModule.php:218
+#: .\resources\views\chart.phtml:149 .\resources\views\cross-table.phtml:14
 msgid "Birth place"
 msgstr "Geburtsort"
 
-#: .\src\CourtshipRadiusModule.php:165 .\resources\views\chart.phtml:152
+#: .\src\CourtshipRadiusModule.php:162 .\resources\views\chart.phtml:149
 msgid "Destination"
 msgstr "Zielort"
 
-#: .\src\CourtshipRadiusModule.php:166
+#: .\src\CourtshipRadiusModule.php:163
 msgid "Destination source"
 msgstr "Quelle des Zielorts"
 
-#: .\src\CourtshipRadiusModule.php:167
+#: .\src\CourtshipRadiusModule.php:164
 msgid "Distance (km)"
 msgstr "Entfernung (km)"
 
-#: .\src\CourtshipRadiusModule.php:168
+#: .\src\CourtshipRadiusModule.php:165
 msgid "Blood relationship"
 msgstr "Blutsverwandtschaft"
 
-#: .\src\CourtshipRadiusModule.php:186
+#: .\src\CourtshipRadiusModule.php:183
 msgid "Statistics by period"
 msgstr "Statistik nach Zeitraum"
 
-#: .\src\CourtshipRadiusModule.php:188 .\resources\views\chart.phtml:87
+#: .\src\CourtshipRadiusModule.php:185 .\resources\views\chart.phtml:84
 msgid "Period"
 msgstr "Zeitraum"
 
-#: .\src\CourtshipRadiusModule.php:190 .\resources\views\chart.phtml:88
-#: .\resources\views\chart.phtml:103
+#: .\src\CourtshipRadiusModule.php:187 .\resources\views\chart.phtml:85
+#: .\resources\views\chart.phtml:100
 msgid "Persons"
 msgstr "Personen"
 
-#: .\src\CourtshipRadiusModule.php:191 .\resources\views\chart.phtml:103
+#: .\src\CourtshipRadiusModule.php:188 .\resources\views\chart.phtml:100
 msgid "Mean"
 msgstr "Mittelwert"
 
-#: .\src\CourtshipRadiusModule.php:192 .\resources\views\chart.phtml:103
+#: .\src\CourtshipRadiusModule.php:189 .\resources\views\chart.phtml:100
 msgid "Median"
 msgstr "Median"
 
-#: .\src\CourtshipRadiusModule.php:193 .\resources\views\chart.phtml:103
+#: .\src\CourtshipRadiusModule.php:190 .\resources\views\chart.phtml:100
 msgid "Standard deviation"
 msgstr "Standardabweichung"
 
-#: .\src\CourtshipRadiusModule.php:217 .\resources\views\chart.phtml:87
-#: .\resources\views\chart.phtml:105 .\resources\views\chart.phtml:118
+#: .\src\CourtshipRadiusModule.php:214 .\resources\views\chart.phtml:84
+#: .\resources\views\chart.phtml:102 .\resources\views\chart.phtml:115
 #: .\resources\views\histograms.phtml:10 .\resources\views\time-series.phtml:65
 msgid "Men"
 msgstr "Männer"
 
-#: .\src\CourtshipRadiusModule.php:217 .\resources\views\chart.phtml:87
-#: .\resources\views\chart.phtml:105 .\resources\views\chart.phtml:118
+#: .\src\CourtshipRadiusModule.php:214 .\resources\views\chart.phtml:84
+#: .\resources\views\chart.phtml:102 .\resources\views\chart.phtml:115
 #: .\resources\views\histograms.phtml:10 .\resources\views\time-series.phtml:66
 msgid "Women"
 msgstr "Frauen"
 
-#: .\src\CourtshipRadiusModule.php:220
+#: .\src\CourtshipRadiusModule.php:217
 msgid "Cross table"
 msgstr "Kreuztabelle"
 
-#: .\src\CourtshipRadiusModule.php:221 .\resources\views\cross-table.phtml:14
+#: .\src\CourtshipRadiusModule.php:218 .\resources\views\cross-table.phtml:14
 #: .\resources\views\cross-table.phtml:17
 msgid "Total"
 msgstr "Gesamt"
 
-#: .\src\CourtshipRadiusModule.php:263
+#: .\src\CourtshipRadiusModule.php:259
 #, php-format
 msgid "The preferences for the module “%s” have been updated."
 msgstr "Die Einstellungen für das Modul „%s“ wurden aktualisiert."
 
-#: .\src\CourtshipRadiusModule.php:280
+#: .\src\CourtshipRadiusModule.php:276
 msgid "IP address, browser data, requested map area"
 msgstr "IP-Adresse, Browserdaten, angeforderter Kartenausschnitt"
 
-#: .\src\CourtshipRadiusModule.php:281
+#: .\src\CourtshipRadiusModule.php:277
 msgid ""
 "This module uses the map provider enabled in webtrees to display places and "
 "movement routes."
@@ -137,72 +137,66 @@ msgstr ""
 "Dieses Modul verwendet den in webtrees aktivierten Kartenanbieter, um Orte "
 "und Bewegungsrouten darzustellen."
 
-#: .\resources\views\chart.phtml:25
+#: .\resources\views\chart.phtml:24
 msgid "Partner’s residence at marriage"
 msgstr "Wohnort des Partners bei der Heirat"
 
-#: .\resources\views\chart.phtml:26
+#: .\resources\views\chart.phtml:25
 msgid "Marriage place"
 msgstr "Heiratsort"
 
-#: .\resources\views\chart.phtml:27
+#: .\resources\views\chart.phtml:26
 msgid "Partner’s birth place"
 msgstr "Geburtsort des Partners"
 
-#: .\resources\views\chart.phtml:30
+#: .\resources\views\chart.phtml:29
 msgid "Neither partner is present as an individual in the Clippings Cart"
 msgstr "Keiner der Partner liegt als Person im Sammelbehälter vor"
 
-#: .\resources\views\chart.phtml:31
+#: .\resources\views\chart.phtml:30
 msgid "No usable marriage date"
 msgstr "Kein verwendbares Heiratsdatum"
 
-#: .\resources\views\chart.phtml:32
+#: .\resources\views\chart.phtml:31
 msgid "A partner is missing or private"
 msgstr "Ein Partner fehlt oder ist privat"
 
-#: .\resources\views\chart.phtml:33
+#: .\resources\views\chart.phtml:32
 msgid "Sex is neither male nor female"
 msgstr "Das Geschlecht ist weder männlich noch weiblich"
 
-#: .\resources\views\chart.phtml:34
+#: .\resources\views\chart.phtml:33
 msgid "Birth place has no coordinates"
 msgstr "Der Geburtsort hat keine Koordinaten"
 
-#: .\resources\views\chart.phtml:35
+#: .\resources\views\chart.phtml:34
 msgid "No destination with coordinates"
 msgstr "Kein Zielort mit Koordinaten"
 
-#: .\resources\views\chart.phtml:42
-msgid "The Clippings Cart is disabled. Enable it before using this chart."
-msgstr ""
-"Der Sammelbehälter ist deaktiviert. Aktivieren Sie ihn, bevor Sie dieses "
-"Diagramm verwenden."
-
-#: .\resources\views\chart.phtml:44
+#: .\resources\views\chart.phtml:41
 msgid ""
 "First add the families and individuals to be analysed to the Clippings Cart."
 msgstr ""
 "Legen Sie zuerst die auszuwertenden Familien und Personen in den "
 "Sammelbehälter."
 
-#: .\resources\views\chart.phtml:52
+#: .\resources\views\chart.phtml:49
 msgid "From year"
 msgstr "Von Jahr"
 
-#: .\resources\views\chart.phtml:56
+#: .\resources\views\chart.phtml:53
 msgid "To year"
 msgstr "Bis Jahr"
 
-#: .\resources\views\chart.phtml:60
+#: .\resources\views\chart.phtml:57
 msgid "view"
 msgstr "anzeigen"
 
-#: .\resources\views\chart.phtml:61
+#: .\resources\views\chart.phtml:58
 msgid "Download CSV"
 msgstr "CSV herunterladen"
 
-#: .\resources\views\chart.phtml:68
+#: .\resources\views\chart.phtml:65
 #, php-format
 msgid ""
 "The selected period is shown in %1$s equal intervals of %2$s years (%3$s–"
@@ -211,15 +205,15 @@ msgstr ""
 "Der ausgewählte Zeitraum wird in %1$s gleich großen Zeitabschnitten zu %2$s "
 "Jahren dargestellt (%3$s–%4$s)."
 
-#: .\resources\views\chart.phtml:77
+#: .\resources\views\chart.phtml:74
 msgid "There are no evaluable observations in the selected period."
 msgstr "Im ausgewählten Zeitraum gibt es keine auswertbaren Beobachtungen."
 
-#: .\resources\views\chart.phtml:80 .\resources\views\time-series.phtml:32
+#: .\resources\views\chart.phtml:77 .\resources\views\time-series.phtml:32
 msgid "Courtship radius over time"
 msgstr "Balzradius im Zeitverlauf"
 
-#: .\resources\views\chart.phtml:81
+#: .\resources\views\chart.phtml:78
 msgid ""
 "The courtship radius is the distance at or below which 90 percent of all "
 "evaluated distances lie."
@@ -227,51 +221,51 @@ msgstr ""
 "Der Balzradius ist die Entfernung, unterhalb derer oder bei der 90 Prozent "
 "aller ausgewerteten Entfernungen liegen."
 
-#: .\resources\views\chart.phtml:88
+#: .\resources\views\chart.phtml:85
 msgid "Courtship radius (P90)"
 msgstr "Balzradius (P90)"
 
-#: .\resources\views\chart.phtml:100
+#: .\resources\views\chart.phtml:97
 msgid "Statistics for the selected period"
 msgstr "Statistik für den ausgewählten Zeitraum"
 
-#: .\resources\views\chart.phtml:103
+#: .\resources\views\chart.phtml:100
 msgid "Group"
 msgstr "Gruppe"
 
-#: .\resources\views\chart.phtml:116
+#: .\resources\views\chart.phtml:113
 msgid "Birth place × destination"
 msgstr "Geburtsort × Zielort"
 
-#: .\resources\views\chart.phtml:117
+#: .\resources\views\chart.phtml:114
 msgid "Each cell contains the number of evaluated persons."
 msgstr "Jede Zelle enthält die Anzahl der ausgewerteten Personen."
 
-#: .\resources\views\chart.phtml:125
+#: .\resources\views\chart.phtml:122
 msgid "Movement map"
 msgstr "Bewegungskarte"
 
-#: .\resources\views\chart.phtml:130
+#: .\resources\views\chart.phtml:127
 msgid "Blood-related spouses"
 msgstr "Blutsverwandte Ehepartner"
 
-#: .\resources\views\chart.phtml:132
+#: .\resources\views\chart.phtml:129
 msgid "No blood relationship was found for the evaluated couples."
 msgstr "Für die ausgewerteten Paare wurde keine Blutsverwandtschaft gefunden."
 
-#: .\resources\views\chart.phtml:134
+#: .\resources\views\chart.phtml:131
 msgid "Couple"
 msgstr "Paar"
 
-#: .\resources\views\chart.phtml:134
+#: .\resources\views\chart.phtml:131
 msgid "Nearest blood relationship"
 msgstr "Nächste Blutsverwandtschaft"
 
-#: .\resources\views\chart.phtml:142
+#: .\resources\views\chart.phtml:139
 msgid "Data quality"
 msgstr "Datenqualität"
 
-#: .\resources\views\chart.phtml:143
+#: .\resources\views\chart.phtml:140
 #, php-format
 msgid ""
 "%1$s families and %2$s individuals were selected; %3$s observations are "
@@ -280,19 +274,19 @@ msgstr ""
 "%1$s Familien und %2$s Personen wurden ausgewählt; %3$s Beobachtungen sind "
 "auswertbar und %4$s Fälle wurden ausgeschlossen."
 
-#: .\resources\views\chart.phtml:145
+#: .\resources\views\chart.phtml:142
 msgid "Reason"
 msgstr "Grund"
 
-#: .\resources\views\chart.phtml:151
+#: .\resources\views\chart.phtml:148
 msgid "Evaluated observations"
 msgstr "Ausgewertete Beobachtungen"
 
-#: .\resources\views\chart.phtml:152
+#: .\resources\views\chart.phtml:149
 msgid "Source"
 msgstr "Quelle"
 
-#: .\resources\views\chart.phtml:152
+#: .\resources\views\chart.phtml:149
 msgid "Distance"
 msgstr "Entfernung"
 
@@ -331,18 +325,10 @@ msgstr ""
 "klicken Sie anschließend seinen Bezugspunkt auf der Karte an."
 
 #: .\resources\views\settings.phtml:15
-msgid ""
-"The Clippings Cart is disabled. Users cannot run this analysis until it is "
-"enabled."
-msgstr ""
-"Der Sammelbehälter ist deaktiviert. Benutzer können diese Analyse erst nach "
-"seiner Aktivierung ausführen."
-
-#: .\resources\views\settings.phtml:20
 msgid "Percentiles"
 msgstr "Perzentile"
 
-#: .\resources\views\settings.phtml:23
+#: .\resources\views\settings.phtml:18
 msgid ""
 "Comma-separated values from 0 to 100. Use a decimal point where needed. P90 "
 "is always included because it defines the courtship radius."
@@ -350,19 +336,19 @@ msgstr ""
 "Durch Kommas getrennte Werte von 0 bis 100. Verwenden Sie bei Bedarf einen "
 "Dezimalpunkt. P90 wird immer einbezogen, da es den Balzradius definiert."
 
-#: .\resources\views\settings.phtml:27
+#: .\resources\views\settings.phtml:22
 msgid "Cross-table sorting"
 msgstr "Sortierung der Kreuztabelle"
 
-#: .\resources\views\settings.phtml:30
+#: .\resources\views\settings.phtml:25
 msgid "By frequency"
 msgstr "Nach Häufigkeit"
 
-#: .\resources\views\settings.phtml:31
+#: .\resources\views\settings.phtml:26
 msgid "Alphabetical"
 msgstr "Alphabetisch"
 
-#: .\resources\views\settings.phtml:35
+#: .\resources\views\settings.phtml:30
 msgid "save"
 msgstr "speichern"
 

@@ -96,8 +96,7 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
         $user = Validator::attributes($request)->user();
         Auth::checkComponentAccess($this, ModuleChartInterface::class, $tree, $user);
 
-        $cartEnabled = $this->moduleService->findByName('clippings') !== null;
-        $xrefs = $cartEnabled ? $this->cartXrefs($tree->name()) : [];
+        $xrefs = $this->cartXrefs($tree->name());
         $analysis = $this->analysisService->analyse($tree, $xrefs);
 
         $observations = $analysis['observations'];
@@ -122,7 +121,6 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
             'title'           => $this->title(),
             'tree'            => $tree,
             'module'          => $this->name(),
-            'cart_enabled'    => $cartEnabled,
             'analysis'        => $analysis,
             'report'          => $report,
             'from_year'       => $fromYear,
@@ -146,8 +144,7 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
         $user = Validator::attributes($request)->user();
         Auth::checkComponentAccess($this, ModuleChartInterface::class, $tree, $user);
 
-        $cartEnabled = $this->moduleService->findByName('clippings') !== null;
-        $analysis = $this->analysisService->analyse($tree, $cartEnabled ? $this->cartXrefs($tree->name()) : []);
+        $analysis = $this->analysisService->analyse($tree, $this->cartXrefs($tree->name()));
         $years = array_map(static fn (CourtshipObservation $observation): int => $observation->marriageYear, $analysis['observations']);
         $defaultFrom = $years === [] ? (int) date('Y') - 400 : min($years);
         $defaultTo = $years === [] ? (int) date('Y') : max($years);
@@ -245,7 +242,6 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
             'title'             => $this->title(),
             'percentiles'       => $this->getPreference('PERCENTILES', self::DEFAULT_PERCENTILES),
             'cross_table_sort'  => $this->crossTableSort(),
-            'cart_enabled'      => $this->moduleService->findByName('clippings') !== null,
         ]);
     }
 

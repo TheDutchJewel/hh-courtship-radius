@@ -9,3 +9,4 @@
 - Add Leaflet movement map, CSV export, data-quality report, and blood-relationship information.
 - Add module settings for percentiles and cross-table sorting.
 - Add German translations, privacy-provider reporting, and unit tests.
+- Read the tree-specific session cart directly instead of relying on the core Clippings Cart module's activation status.

@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 use Fisharebest\Webtrees\I18N;
 
-/** @var bool $cart_enabled */
 /** @var string $cross_table_sort */
 /** @var string $percentiles */
 /** @var string $title */
 ?>
 <h2 class="wt-page-title"><?= e($title) ?></h2>
-
-<?php if (!$cart_enabled) : ?>
-    <div class="alert alert-warning"><?= I18N::translate('The Clippings Cart is disabled. Users cannot run this analysis until it is enabled.') ?></div>
-<?php endif ?>
 
 <form method="post">
     <div class="row mb-3">

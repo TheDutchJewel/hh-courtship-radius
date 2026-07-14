@@ -7,7 +7,6 @@ use Fisharebest\Webtrees\Tree;
 
 /**
  * @var array<string,mixed> $analysis
- * @var bool                $cart_enabled
  * @var string              $csv_url
  * @var int                 $from_year
  * @var object|null         $leaflet_config
@@ -38,9 +37,7 @@ $reasonLabels = [
 
 <h2 class="wt-page-title"><?= e($title) ?></h2>
 
-<?php if (!$cart_enabled) : ?>
-    <div class="alert alert-warning"><?= I18N::translate('The Clippings Cart is disabled. Enable it before using this chart.') ?></div>
-<?php elseif ($analysis['selected_families'] === 0) : ?>
+<?php if ($analysis['selected_families'] === 0) : ?>
     <div class="alert alert-info"><?= I18N::translate('First add the families and individuals to be analysed to the Clippings Cart.') ?></div>
 <?php else : ?>
     <form method="get" class="wt-page-options d-print-none mb-4">
