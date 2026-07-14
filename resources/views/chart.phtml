@@ -1,0 +1,157 @@
+<?php
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\I18N;
+use Fisharebest\Webtrees\Tree;
+
+/**
+ * @var array<string,mixed> $analysis
+ * @var bool                $cart_enabled
+ * @var string              $csv_url
+ * @var int                 $from_year
+ * @var object|null         $leaflet_config
+ * @var string|null         $map_message
+ * @var string              $module
+ * @var array<float>        $percentiles
+ * @var array<string,mixed> $report
+ * @var string              $title
+ * @var int                 $to_year
+ * @var Tree                $tree
+ */
+
+$format = static fn (float|null $value): string => $value === null ? '–' : I18N::number($value, 1);
+$destinationLabels = [
+    'partner_residence' => I18N::translate('Partner’s residence at marriage'),
+    'marriage_place'    => I18N::translate('Marriage place'),
+    'partner_birth'     => I18N::translate('Partner’s birth place'),
+];
+$reasonLabels = [
+    'no_selected_partner'             => I18N::translate('Neither partner is present as an individual in the Clippings Cart'),
+    'missing_marriage_date'           => I18N::translate('No usable marriage date'),
+    'missing_or_private_partner'      => I18N::translate('A partner is missing or private'),
+    'unknown_sex'                     => I18N::translate('Sex is neither male nor female'),
+    'missing_birth_coordinates'       => I18N::translate('Birth place has no coordinates'),
+    'missing_destination_coordinates' => I18N::translate('No destination with coordinates'),
+];
+?>
+
+<h2 class="wt-page-title"><?= e($title) ?></h2>
+
+<?php if (!$cart_enabled) : ?>
+    <div class="alert alert-warning"><?= I18N::translate('The Clippings Cart is disabled. Enable it before using this chart.') ?></div>
+<?php elseif ($analysis['selected_families'] === 0) : ?>
+    <div class="alert alert-info"><?= I18N::translate('First add the families and individuals to be analysed to the Clippings Cart.') ?></div>
+<?php else : ?>
+    <form method="get" class="wt-page-options d-print-none mb-4">
+        <input type="hidden" name="module" value="<?= e($module) ?>">
+        <input type="hidden" name="action" value="Chart">
+        <input type="hidden" name="tree" value="<?= e($tree->name()) ?>">
+        <div class="row g-3 align-items-end">
+            <div class="col-sm-4">
+                <label class="form-label" for="courtship-from"><?= I18N::translate('From year') ?></label>
+                <input class="form-control" id="courtship-from" name="from" type="number" value="<?= $from_year ?>" required>
+            </div>
+            <div class="col-sm-4">
+                <label class="form-label" for="courtship-to"><?= I18N::translate('To year') ?></label>
+                <input class="form-control" id="courtship-to" name="to" type="number" value="<?= $to_year ?>" required>
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary" type="submit"><?= I18N::translate('view') ?></button>
+                <a class="btn btn-secondary" href="<?= e($csv_url) ?>"><?= I18N::translate('Download CSV') ?></a>
+            </div>
+        </div>
+    </form>
+
+    <div class="alert alert-secondary">
+        <?= I18N::translate(
+            'The selected period is shown in %1$s equal intervals of %2$s years (%3$s–%4$s).',
+            I18N::number($report['plan']['count']),
+            I18N::number($report['plan']['width']),
+            I18N::number($report['plan']['rounded_from']),
+            I18N::number($report['plan']['rounded_to']),
+        ) ?>
+    </div>
+
+    <?php if ($report['observations'] === []) : ?>
+        <div class="alert alert-warning"><?= I18N::translate('There are no evaluable observations in the selected period.') ?></div>
+    <?php else : ?>
+        <section class="mb-5">
+            <h3><?= I18N::translate('Courtship radius over time') ?></h3>
+            <p class="text-muted"><?= I18N::translate('The courtship radius is the distance at or below which 90 percent of all evaluated distances lie.') ?></p>
+            <?= view($module . '::time-series', ['series' => $report['series']]) ?>
+
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered table-sm text-end">
+                    <thead>
+                        <tr><th class="text-start" rowspan="2"><?= I18N::translate('Period') ?></th><th colspan="2"><?= I18N::translate('Men') ?></th><th colspan="2"><?= I18N::translate('Women') ?></th></tr>
+                        <tr><th><?= I18N::translate('Persons') ?></th><th><?= I18N::translate('Courtship radius (P90)') ?></th><th><?= I18N::translate('Persons') ?></th><th><?= I18N::translate('Courtship radius (P90)') ?></th></tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($report['series'] as $row) : ?>
+                        <tr><th class="text-start"><?= e($row['label']) ?></th><td><?= I18N::number($row['M']['count']) ?></td><td><?= $format($row['M']['percentiles']['90']) ?> km</td><td><?= I18N::number($row['F']['count']) ?></td><td><?= $format($row['F']['percentiles']['90']) ?> km</td></tr>
+                    <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h3><?= I18N::translate('Statistics for the selected period') ?></h3>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm text-end">
+                    <thead><tr><th class="text-start"><?= I18N::translate('Group') ?></th><th><?= I18N::translate('Persons') ?></th><th><?= I18N::translate('Mean') ?></th><th><?= I18N::translate('Median') ?></th><th><?= I18N::translate('Standard deviation') ?></th><?php foreach ($percentiles as $percentile) : ?><th>P<?= e(rtrim(rtrim(number_format($percentile, 2, '.', ''), '0'), '.')) ?></th><?php endforeach ?></tr></thead>
+                    <tbody>
+                    <?php foreach (['M' => I18N::translate('Men'), 'F' => I18N::translate('Women')] as $sex => $label) : ?>
+                        <?php $statistics = $report['totals'][$sex] ?>
+                        <tr><th class="text-start"><?= $label ?></th><td><?= I18N::number($statistics['count']) ?></td><td><?= $format($statistics['mean']) ?> km</td><td><?= $format($statistics['median']) ?> km</td><td><?= $format($statistics['standard_deviation']) ?> km</td><?php foreach ($statistics['percentiles'] as $value) : ?><td><?= $format($value) ?> km</td><?php endforeach ?></tr>
+                    <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+            <?= view($module . '::histograms', ['histograms' => $report['histograms']]) ?>
+        </section>
+
+        <section class="mb-5">
+            <h3><?= I18N::translate('Birth place × destination') ?></h3>
+            <p class="text-muted"><?= I18N::translate('Each cell contains the number of evaluated persons.') ?></p>
+            <?php foreach (['M' => I18N::translate('Men'), 'F' => I18N::translate('Women')] as $sex => $label) : ?>
+                <h4><?= $label ?></h4>
+                <?= view($module . '::cross-table', ['table' => $report['cross_tables'][$sex]]) ?>
+            <?php endforeach ?>
+        </section>
+
+        <section class="mb-5">
+            <h3><?= I18N::translate('Movement map') ?></h3>
+            <?php if ($leaflet_config === null) : ?><div class="alert alert-warning"><?= $map_message ?></div><?php else : ?><?= view($module . '::map', ['data' => $report['map'], 'leaflet_config' => $leaflet_config]) ?><?php endif ?>
+        </section>
+
+        <section class="mb-5">
+            <h3><?= I18N::translate('Blood-related spouses') ?></h3>
+            <?php if ($report['blood_relationships'] === []) : ?>
+                <p><?= I18N::translate('No blood relationship was found for the evaluated couples.') ?></p>
+            <?php else : ?>
+                <div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th><?= I18N::translate('Family') ?></th><th><?= I18N::translate('Couple') ?></th><th><?= I18N::translate('Nearest blood relationship') ?></th></tr></thead><tbody>
+                <?php foreach ($report['blood_relationships'] as $relationship) : ?><tr><td><?= e($relationship['family_xref']) ?></td><td><?= e($relationship['first_name']) ?> / <?= e($relationship['second_name']) ?></td><td><?= e($relationship['relationship']) ?></td></tr><?php endforeach ?>
+                </tbody></table></div>
+            <?php endif ?>
+        </section>
+    <?php endif ?>
+
+    <section class="mb-5">
+        <h3><?= I18N::translate('Data quality') ?></h3>
+        <p><?= I18N::translate('%1$s families and %2$s individuals were selected; %3$s observations are evaluable and %4$s cases were excluded.', I18N::number($analysis['selected_families']), I18N::number($analysis['selected_individuals']), I18N::number(count($analysis['observations'])), I18N::number(count($analysis['excluded']))) ?></p>
+        <?php if ($analysis['excluded'] !== []) : ?>
+            <div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th><?= I18N::translate('Family') ?></th><th><?= I18N::translate('Person') ?></th><th><?= I18N::translate('Reason') ?></th></tr></thead><tbody>
+            <?php foreach ($analysis['excluded'] as $excluded) : ?><tr><td><?= e($excluded['family_xref']) ?></td><td><?= e($excluded['subject_xref']) ?></td><td><?= $reasonLabels[$excluded['reason']] ?? e($excluded['reason']) ?></td></tr><?php endforeach ?>
+            </tbody></table></div>
+        <?php endif ?>
+
+        <details class="mt-3">
+            <summary><?= I18N::translate('Evaluated observations') ?></summary>
+            <div class="table-responsive mt-2"><table class="table table-bordered table-sm"><thead><tr><th><?= I18N::translate('Person') ?></th><th><?= I18N::translate('Marriage year') ?></th><th><?= I18N::translate('Birth place') ?></th><th><?= I18N::translate('Destination') ?></th><th><?= I18N::translate('Source') ?></th><th><?= I18N::translate('Distance') ?></th></tr></thead><tbody>
+            <?php foreach ($report['observations'] as $observation) : ?><tr><td><?= e($observation->subjectName) ?> (<?= e($observation->subjectXref) ?>)</td><td><?= $observation->marriageYear ?></td><td><?= e($observation->origin->name) ?></td><td><?= e($observation->destination->name) ?></td><td><?= $destinationLabels[$observation->destinationKind] ?? e($observation->destinationKind) ?></td><td class="text-end"><?= $format($observation->distance) ?> km</td></tr><?php endforeach ?>
+            </tbody></table></div>
+        </details>
+    </section>
+<?php endif ?>

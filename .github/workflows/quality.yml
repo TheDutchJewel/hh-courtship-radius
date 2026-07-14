@@ -16,6 +16,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install --yes gettext
       - name: Check PHP syntax
         run: find . -type f \( -name '*.php' -o -name '*.phtml' \) -print0 | xargs -0 -n1 php -l
+      - name: Run unit tests
+        run: php tests/run.php
       - name: Check gettext catalogs
         run: |
           find resources/lang -type f -name '*.po' -print0 | xargs -0 -n1 msgfmt --check --check-format -o /dev/null
