@@ -28,7 +28,7 @@ Only FAM records and spouse INDI records explicitly present in the current treeâ
 
 ## Status
 
-The current stable release is version 0.1.0.
+The current stable release is version 0.1.1.
 
 ## Requirements
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hh-courtship-radius 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-15 01:58+0200\n"
+"POT-Creation-Date: 2026-07-15 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,261 +29,241 @@ msgstr ""
 msgid "Analyse the geographic courtship radius of selected families over time."
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:156 .\resources\views\chart.phtml:131
-#: .\resources\views\chart.phtml:142
-msgid "Family"
-msgstr ""
-
-#: .\src\CourtshipRadiusModule.php:157 .\resources\views\chart.phtml:142
-#: .\resources\views\chart.phtml:149
+#: .\src\CourtshipRadiusModule.php:167 .\resources\views\chart.phtml:162
+#: .\resources\views\chart.phtml:172
 msgid "Person"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:158 .\src\CourtshipRadiusModule.php:186
-msgid "Sex"
-msgstr ""
-
-#: .\src\CourtshipRadiusModule.php:159
+#: .\src\CourtshipRadiusModule.php:169
 msgid "Partner"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:160 .\resources\views\chart.phtml:149
+#: .\src\CourtshipRadiusModule.php:170 .\resources\views\chart.phtml:172
 msgid "Marriage year"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:161 .\src\CourtshipRadiusModule.php:218
-#: .\resources\views\chart.phtml:149 .\resources\views\cross-table.phtml:14
+#: .\src\CourtshipRadiusModule.php:171 .\src\CourtshipRadiusModule.php:228
+#: .\resources\views\chart.phtml:172 .\resources\views\cross-table.phtml:15
 msgid "Birth place"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:162 .\resources\views\chart.phtml:149
-msgid "Destination"
-msgstr ""
-
-#: .\src\CourtshipRadiusModule.php:163
+#: .\src\CourtshipRadiusModule.php:173
 msgid "Destination source"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:164
+#: .\src\CourtshipRadiusModule.php:174
 msgid "Distance (km)"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:165
+#: .\src\CourtshipRadiusModule.php:175
 msgid "Blood relationship"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:183
+#: .\src\CourtshipRadiusModule.php:193
 msgid "Statistics by period"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:185 .\resources\views\chart.phtml:84
+#: .\src\CourtshipRadiusModule.php:195 .\resources\views\chart.phtml:91
 msgid "Period"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:187 .\resources\views\chart.phtml:85
-#: .\resources\views\chart.phtml:100
+#: .\src\CourtshipRadiusModule.php:197 .\resources\views\chart.phtml:92
+#: .\resources\views\chart.phtml:107
 msgid "Persons"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:188 .\resources\views\chart.phtml:100
+#: .\src\CourtshipRadiusModule.php:198 .\resources\views\chart.phtml:107
 msgid "Mean"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:189 .\resources\views\chart.phtml:100
+#: .\src\CourtshipRadiusModule.php:199
 msgid "Median"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:190 .\resources\views\chart.phtml:100
+#: .\src\CourtshipRadiusModule.php:200 .\resources\views\chart.phtml:107
 msgid "Standard deviation"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:214 .\resources\views\chart.phtml:84
-#: .\resources\views\chart.phtml:102 .\resources\views\chart.phtml:115
-#: .\resources\views\histograms.phtml:10 .\resources\views\time-series.phtml:65
+#: .\src\CourtshipRadiusModule.php:224 .\resources\views\chart.phtml:91
+#: .\resources\views\chart.phtml:109 .\resources\views\chart.phtml:122
+#: .\resources\views\histograms.phtml:18 .\resources\views\time-series.phtml:67
 msgid "Men"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:214 .\resources\views\chart.phtml:84
-#: .\resources\views\chart.phtml:102 .\resources\views\chart.phtml:115
-#: .\resources\views\histograms.phtml:10 .\resources\views\time-series.phtml:66
+#: .\src\CourtshipRadiusModule.php:224 .\resources\views\chart.phtml:91
+#: .\resources\views\chart.phtml:109 .\resources\views\chart.phtml:122
+#: .\resources\views\histograms.phtml:19 .\resources\views\time-series.phtml:68
 msgid "Women"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:217
+#: .\src\CourtshipRadiusModule.php:227
 msgid "Cross table"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:218 .\resources\views\cross-table.phtml:14
-#: .\resources\views\cross-table.phtml:17
-msgid "Total"
-msgstr ""
-
-#: .\src\CourtshipRadiusModule.php:259
-#, php-format
-msgid "The preferences for the module “%s” have been updated."
-msgstr ""
-
-#: .\src\CourtshipRadiusModule.php:276
+#: .\src\CourtshipRadiusModule.php:286
 msgid "IP address, browser data, requested map area"
 msgstr ""
 
-#: .\src\CourtshipRadiusModule.php:277
+#: .\src\CourtshipRadiusModule.php:287
 msgid ""
 "This module uses the map provider enabled in webtrees to display places and "
 "movement routes."
 msgstr ""
 
-#: .\resources\views\chart.phtml:24
+#: .\resources\views\chart.phtml:31
 msgid "Partner’s residence at marriage"
 msgstr ""
 
-#: .\resources\views\chart.phtml:25
+#: .\resources\views\chart.phtml:32
 msgid "Marriage place"
 msgstr ""
 
-#: .\resources\views\chart.phtml:26
+#: .\resources\views\chart.phtml:33
 msgid "Partner’s birth place"
 msgstr ""
 
-#: .\resources\views\chart.phtml:29
+#: .\resources\views\chart.phtml:36
 msgid "Neither partner is present as an individual in the Clippings Cart"
 msgstr ""
 
-#: .\resources\views\chart.phtml:30
+#: .\resources\views\chart.phtml:37
 msgid "No usable marriage date"
 msgstr ""
 
-#: .\resources\views\chart.phtml:31
+#: .\resources\views\chart.phtml:38
 msgid "A partner is missing or private"
 msgstr ""
 
-#: .\resources\views\chart.phtml:32
+#: .\resources\views\chart.phtml:39
 msgid "Sex is neither male nor female"
 msgstr ""
 
-#: .\resources\views\chart.phtml:33
+#: .\resources\views\chart.phtml:40
 msgid "Birth place has no coordinates"
 msgstr ""
 
-#: .\resources\views\chart.phtml:34
+#: .\resources\views\chart.phtml:41
 msgid "No destination with coordinates"
 msgstr ""
 
-#: .\resources\views\chart.phtml:41
+#: .\resources\views\chart.phtml:48
 msgid ""
 "First add the families and individuals to be analysed to the Clippings Cart."
 msgstr ""
 
-#: .\resources\views\chart.phtml:49
+#: .\resources\views\chart.phtml:56
 msgid "From year"
 msgstr ""
 
-#: .\resources\views\chart.phtml:53
+#: .\resources\views\chart.phtml:60
 msgid "To year"
 msgstr ""
 
-#: .\resources\views\chart.phtml:57
-msgid "view"
-msgstr ""
-
-#: .\resources\views\chart.phtml:58
-msgid "Download CSV"
-msgstr ""
-
 #: .\resources\views\chart.phtml:65
+msgid "Download cross table as CSV"
+msgstr ""
+
+#: .\resources\views\chart.phtml:72
 #, php-format
 msgid ""
 "The selected period is shown in %1$s equal intervals of %2$s years (%3$s–"
 "%4$s)."
 msgstr ""
 
-#: .\resources\views\chart.phtml:74
+#: .\resources\views\chart.phtml:81
 msgid "There are no evaluable observations in the selected period."
 msgstr ""
 
-#: .\resources\views\chart.phtml:77 .\resources\views\time-series.phtml:32
+#: .\resources\views\chart.phtml:84 .\resources\views\time-series.phtml:34
 msgid "Courtship radius over time"
 msgstr ""
 
-#: .\resources\views\chart.phtml:78
+#: .\resources\views\chart.phtml:85
 msgid ""
 "The courtship radius is the distance at or below which 90 percent of all "
 "evaluated distances lie."
 msgstr ""
 
-#: .\resources\views\chart.phtml:85
+#: .\resources\views\chart.phtml:92
 msgid "Courtship radius (P90)"
 msgstr ""
 
-#: .\resources\views\chart.phtml:97
+#: .\resources\views\chart.phtml:104
 msgid "Statistics for the selected period"
 msgstr ""
 
-#: .\resources\views\chart.phtml:100
+#: .\resources\views\chart.phtml:107
 msgid "Group"
 msgstr ""
 
-#: .\resources\views\chart.phtml:113
-msgid "Birth place × destination"
+#: .\resources\views\chart.phtml:120
+msgid "Birth place × marriage place"
 msgstr ""
 
-#: .\resources\views\chart.phtml:114
+#: .\resources\views\chart.phtml:121
 msgid "Each cell contains the number of evaluated persons."
 msgstr ""
 
-#: .\resources\views\chart.phtml:122
+#: .\resources\views\chart.phtml:131
 msgid "Movement map"
 msgstr ""
 
-#: .\resources\views\chart.phtml:127
+#: .\resources\views\chart.phtml:136
 msgid "Blood-related spouses"
 msgstr ""
 
-#: .\resources\views\chart.phtml:129
+#: .\resources\views\chart.phtml:138
 msgid "No blood relationship was found for the evaluated couples."
 msgstr ""
 
-#: .\resources\views\chart.phtml:131
+#: .\resources\views\chart.phtml:142
+#, php-format
+msgid "The estimated <strong>consanguinity rate</strong> is %s."
+msgstr ""
+
+#: .\resources\views\chart.phtml:145
+msgid ""
+"The figure is calculated by dividing the number of marriages between blood "
+"relatives by the total number of marriages present."
+msgstr ""
+
+#: .\resources\views\chart.phtml:147
 msgid "Couple"
 msgstr ""
 
-#: .\resources\views\chart.phtml:131
+#: .\resources\views\chart.phtml:147
 msgid "Nearest blood relationship"
 msgstr ""
 
-#: .\resources\views\chart.phtml:139
+#: .\resources\views\chart.phtml:155
 msgid "Data quality"
 msgstr ""
 
-#: .\resources\views\chart.phtml:140
+#: .\resources\views\chart.phtml:156
 #, php-format
 msgid ""
 "%1$s families and %2$s individuals were selected; %3$s observations are "
 "evaluable and %4$s cases were excluded."
 msgstr ""
 
-#: .\resources\views\chart.phtml:142
+#: .\resources\views\chart.phtml:159
+msgid "Excluded cases"
+msgstr ""
+
+#: .\resources\views\chart.phtml:163
 msgid "Reason"
 msgstr ""
 
-#: .\resources\views\chart.phtml:148
+#: .\resources\views\chart.phtml:171
 msgid "Evaluated observations"
 msgstr ""
 
-#: .\resources\views\chart.phtml:149
-msgid "Source"
-msgstr ""
-
-#: .\resources\views\chart.phtml:149
+#: .\resources\views\chart.phtml:172
 msgid "Distance"
 msgstr ""
 
-#: .\resources\views\cross-table.phtml:10
-msgid "Nothing to show"
-msgstr ""
-
-#: .\resources\views\histograms.phtml:13
-msgid "Distribution"
+#: .\resources\views\histograms.phtml:16
+msgid "Men/Women – Distribution"
 msgstr ""
 
 #: .\resources\views\map.phtml:14
@@ -305,36 +285,33 @@ msgstr ""
 #: .\resources\views\map.phtml:20
 msgid ""
 "Blue routes represent men; pink routes represent women. The line width and "
-"number show the number of persons. Select a P90 circle and then click its "
-"reference point on the map."
+"number show the number of persons. Each P90 circle is centred on the most "
+"frequent birth place for that group; its radius is the mean of the available "
+"time-slice P90 values."
 msgstr ""
 
-#: .\resources\views\settings.phtml:15
+#: .\resources\views\settings.phtml:16
 msgid "Percentiles"
 msgstr ""
 
-#: .\resources\views\settings.phtml:18
+#: .\resources\views\settings.phtml:19
 msgid ""
 "Comma-separated values from 0 to 100. Use a decimal point where needed. P90 "
 "is always included because it defines the courtship radius."
 msgstr ""
 
-#: .\resources\views\settings.phtml:22
+#: .\resources\views\settings.phtml:23
 msgid "Cross-table sorting"
 msgstr ""
 
-#: .\resources\views\settings.phtml:25
+#: .\resources\views\settings.phtml:26
 msgid "By frequency"
 msgstr ""
 
-#: .\resources\views\settings.phtml:26
+#: .\resources\views\settings.phtml:27
 msgid "Alphabetical"
 msgstr ""
 
-#: .\resources\views\settings.phtml:30
-msgid "save"
-msgstr ""
-
-#: .\resources\views\time-series.phtml:67
-msgid "Kilometres (P90)"
+#: .\resources\views\time-series.phtml:69
+msgid "Courtship radius (P90) / km"
 msgstr ""

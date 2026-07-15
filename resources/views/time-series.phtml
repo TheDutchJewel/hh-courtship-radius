@@ -15,7 +15,9 @@ foreach ($series as $row) {
         }
     }
 }
-$maximum = max(1.0, $values === [] ? 1.0 : max($values));
+$dataMaximum = max(1.0, $values === [] ? 1.0 : max($values));
+$tickStep = max(1, (int) ceil($dataMaximum / 4));
+$axisMaximum = $tickStep * 4;
 $width = 920;
 $height = 320;
 $left = 60;
@@ -26,14 +28,14 @@ $plotWidth = $width - $left - $right;
 $plotHeight = $height - $top - $bottom;
 $count = max(1, count($series));
 $x = static fn (int $index): float => $left + ($index + 0.5) * $plotWidth / $count;
-$y = static fn (float $value): float => $top + $plotHeight - $value / $maximum * $plotHeight;
+$y = static fn (float $value): float => $top + $plotHeight - $value / $axisMaximum * $plotHeight;
 ?>
 <div class="overflow-auto border rounded bg-body p-2">
     <svg viewBox="0 0 <?= $width ?> <?= $height ?>" role="img" aria-label="<?= e(I18N::translate('Courtship radius over time')) ?>" style="min-width:720px;width:100%;height:auto">
         <?php for ($tick = 0; $tick <= 4; $tick++) : ?>
-            <?php $value = $maximum * $tick / 4; $tickY = $y($value) ?>
+            <?php $value = $tickStep * $tick; $tickY = $y($value) ?>
             <line x1="<?= $left ?>" y1="<?= $tickY ?>" x2="<?= $width - $right ?>" y2="<?= $tickY ?>" stroke="currentColor" opacity="0.15"/>
-            <text x="<?= $left - 8 ?>" y="<?= $tickY + 4 ?>" text-anchor="end" font-size="12" fill="currentColor"><?= e(I18N::number($value, 1)) ?></text>
+            <text x="<?= $left - 8 ?>" y="<?= $tickY + 4 ?>" text-anchor="end" font-size="12" fill="currentColor"><?= e(I18N::number($value)) ?></text>
         <?php endfor ?>
         <?php foreach ($series as $index => $row) : ?>
             <text x="<?= $x($index) ?>" y="<?= $height - 25 ?>" text-anchor="middle" font-size="11" fill="currentColor"><?= e($row['label']) ?></text>
@@ -64,6 +66,6 @@ $y = static fn (float $value): float => $top + $plotHeight - $value / $maximum *
         <?php endforeach ?>
         <circle cx="<?= $left ?>" cy="<?= $height - 6 ?>" r="5" fill="#2563eb"/><text x="<?= $left + 10 ?>" y="<?= $height - 2 ?>" font-size="12" fill="currentColor"><?= I18N::translate('Men') ?></text>
         <circle cx="<?= $left + 80 ?>" cy="<?= $height - 6 ?>" r="5" fill="#db2777"/><text x="<?= $left + 90 ?>" y="<?= $height - 2 ?>" font-size="12" fill="currentColor"><?= I18N::translate('Women') ?></text>
-        <text transform="translate(14 <?= $top + $plotHeight / 2 ?>) rotate(-90)" text-anchor="middle" font-size="12" fill="currentColor"><?= I18N::translate('Kilometres (P90)') ?></text>
+        <text transform="translate(14 <?= $top + $plotHeight / 2 ?>) rotate(-90)" text-anchor="middle" font-size="12" fill="currentColor"><?= I18N::translate('Courtship radius (P90) / km') ?></text>
     </svg>
 </div>

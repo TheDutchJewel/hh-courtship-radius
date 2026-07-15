@@ -23,7 +23,7 @@ final class CartAnalysisService
 
     /**
      * @param array<string> $xrefs Exact record XREFs from the current tree's session cart.
-     * @return array{selected_families:int,selected_individuals:int,observations:array<CourtshipObservation>,excluded:array<int,array{family_xref:string,subject_xref:string,reason:string}>}
+     * @return array{selected_families:int,selected_individuals:int,marriages:array<int,array{family_xref:string,marriage_year:int,first_name:string,second_name:string,blood_relationship:string|null}>,observations:array<CourtshipObservation>,excluded:array<int,array{family_xref:string,subject_xref:string,reason:string}>}
      */
     public function analyse(Tree $tree, array $xrefs): array
     {
@@ -41,6 +41,7 @@ final class CartAnalysisService
         }
 
         $observations = [];
+        $marriages = [];
         $excluded = [];
 
         foreach ($families as $family) {
@@ -67,6 +68,14 @@ final class CartAnalysisService
             $marriageJulianDay = $marriage->date()->julianDay();
 
             $bloodRelationship = $this->bloodRelationshipService->relationship($husband, $wife);
+            $marriages[] = [
+                'family_xref'        => $family->xref(),
+                'marriage_year'      => $marriageYear,
+                'first_name'         => strip_tags($husband->fullName()),
+                'second_name'        => strip_tags($wife->fullName()),
+                'blood_relationship' => $bloodRelationship,
+            ];
+
             foreach ([[$husband, $wife], [$wife, $husband]] as [$subject, $partner]) {
                 if (!isset($selected[$subject->xref()])) {
                     continue;
@@ -91,6 +100,7 @@ final class CartAnalysisService
         return [
             'selected_families'    => count($families),
             'selected_individuals' => $selectedIndividuals,
+            'marriages'            => $marriages,
             'observations'         => $observations,
             'excluded'             => $excluded,
         ];

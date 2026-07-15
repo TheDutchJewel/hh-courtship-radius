@@ -16,16 +16,22 @@ final class ReportService
 
     /**
      * @param array<CourtshipObservation> $observations
+     * @param array<int,array{family_xref:string,marriage_year:int,first_name:string,second_name:string,blood_relationship:string|null}> $marriages
      * @param array<float> $percentiles
      * @return array<string,mixed>
      */
-    public function build(array $observations, int $fromYear, int $toYear, array $percentiles, string $sort): array
+    public function build(array $observations, array $marriages, int $fromYear, int $toYear, array $percentiles, string $sort): array
     {
         $plan = $this->timeSliceService->plan($fromYear, $toYear);
         $filtered = array_values(array_filter(
             $observations,
             static fn (CourtshipObservation $observation): bool => $observation->marriageYear >= $fromYear
                 && $observation->marriageYear <= $toYear,
+        ));
+        $filteredMarriages = array_values(array_filter(
+            $marriages,
+            static fn (array $marriage): bool => $marriage['marriage_year'] >= $fromYear
+                && $marriage['marriage_year'] <= $toYear,
         ));
 
         $series = [];
@@ -46,24 +52,35 @@ final class ReportService
         }
 
         $totals = [];
-        $histograms = [];
         $crossTables = [];
+        $distancesBySex = [];
         foreach (['M', 'F'] as $sex) {
             $sexObservations = array_values(array_filter(
                 $filtered,
                 static fn (CourtshipObservation $observation): bool => $observation->sex === $sex,
             ));
             $distances = array_map(static fn (CourtshipObservation $observation): float => $observation->distance, $sexObservations);
+            $distancesBySex[$sex] = $distances;
             $totals[$sex] = $this->statisticsService->summarize($distances, $percentiles);
-            $histograms[$sex] = $this->statisticsService->histogram($distances);
             $crossTables[$sex] = $this->crossTable($sexObservations, $sort);
         }
 
-        $map = $this->mapData($filtered);
-        $map['radii'] = [
-            'M' => $totals['M']['percentiles']['90'],
-            'F' => $totals['F']['percentiles']['90'],
+        $allDistances = array_merge($distancesBySex['M'], $distancesBySex['F']);
+        $histogramMaximum = $allDistances === [] ? 10.0 : (float) max($allDistances);
+        $histograms = [
+            'M' => $this->statisticsService->histogram($distancesBySex['M'], $histogramMaximum),
+            'F' => $this->statisticsService->histogram($distancesBySex['F'], $histogramMaximum),
         ];
+
+        $map = $this->mapData($filtered);
+        $map['reference_circles'] = [
+            'M' => $this->referenceCircle($filtered, $series, 'M'),
+            'F' => $this->referenceCircle($filtered, $series, 'F'),
+        ];
+
+        $bloodRelationships = $this->bloodRelationships($filteredMarriages);
+        $marriageCount = count($filteredMarriages);
+        $relatedMarriageCount = count($bloodRelationships);
 
         return [
             'plan'                => $plan,
@@ -73,7 +90,12 @@ final class ReportService
             'histograms'          => $histograms,
             'cross_tables'        => $crossTables,
             'map'                 => $map,
-            'blood_relationships' => $this->bloodRelationships($filtered),
+            'blood_relationships' => $bloodRelationships,
+            'consanguinity'       => [
+                'related_marriages' => $relatedMarriageCount,
+                'total_marriages'   => $marriageCount,
+                'rate'              => $marriageCount === 0 ? 0.0 : $relatedMarriageCount / $marriageCount,
+            ],
         ];
     }
 
@@ -153,17 +175,67 @@ final class ReportService
         return ['routes' => array_values($routes), 'same_place' => array_values($samePlace)];
     }
 
-    /** @param array<CourtshipObservation> $observations */
-    private function bloodRelationships(array $observations): array
+    /**
+     * @param array<CourtshipObservation>    $observations
+     * @param array<int,array<string,mixed>> $series
+     * @return array{center:array{name:string,latitude:float,longitude:float,coordinate_source:string},person_count:int,radius:float,time_slice_count:int}|null
+     */
+    private function referenceCircle(array $observations, array $series, string $sex): array|null
+    {
+        $p90Values = [];
+        foreach ($series as $row) {
+            $p90 = $row[$sex]['percentiles']['90'];
+            if ($p90 !== null) {
+                $p90Values[] = $p90;
+            }
+        }
+
+        if ($p90Values === []) {
+            return null;
+        }
+
+        $origins = [];
+        foreach ($observations as $observation) {
+            if ($observation->sex !== $sex) {
+                continue;
+            }
+
+            $origin = $observation->origin;
+            $key = number_format($origin->latitude, 6, '.', '') . '|' . number_format($origin->longitude, 6, '.', '');
+            if (!isset($origins[$key])) {
+                $origins[$key] = ['center' => $origin->toArray(), 'person_count' => 0];
+            }
+            $origins[$key]['person_count']++;
+        }
+
+        $origins = array_values($origins);
+        usort($origins, static fn (array $left, array $right): int =>
+            $right['person_count'] <=> $left['person_count']
+            ?: strnatcasecmp($left['center']['name'], $right['center']['name']));
+
+        if ($origins === []) {
+            return null;
+        }
+
+        return [
+            'center'           => $origins[0]['center'],
+            'person_count'     => $origins[0]['person_count'],
+            'radius'           => array_sum($p90Values) / count($p90Values),
+            'time_slice_count' => count($p90Values),
+        ];
+    }
+
+    /** @param array<int,array{family_xref:string,marriage_year:int,first_name:string,second_name:string,blood_relationship:string|null}> $marriages */
+    private function bloodRelationships(array $marriages): array
     {
         $relationships = [];
-        foreach ($observations as $observation) {
-            if ($observation->bloodRelationship !== null && !isset($relationships[$observation->familyXref])) {
-                $relationships[$observation->familyXref] = [
-                    'family_xref' => $observation->familyXref,
-                    'first_name'  => $observation->subjectName,
-                    'second_name' => $observation->partnerName,
-                    'relationship'=> $observation->bloodRelationship,
+        foreach ($marriages as $marriage) {
+            if ($marriage['blood_relationship'] !== null) {
+                $relationships[$marriage['family_xref']] = [
+                    'family_xref'  => $marriage['family_xref'],
+                    'first_name'   => $marriage['first_name'],
+                    'second_name'  => $marriage['second_name'],
+                    'relationship' => $marriage['blood_relationship'],
                 ];
             }
         }
