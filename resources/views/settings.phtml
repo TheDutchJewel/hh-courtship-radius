@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\I18N;
+
+/** @var string $cross_table_sort */
+/** @var string $percentiles */
+/** @var string $title */
+?>
+<h2 class="wt-page-title"><?= e($title) ?></h2>
+
+<form method="post">
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label" for="courtship-percentiles"><?= I18N::translate('Percentiles') ?></label>
+        <div class="col-sm-9">
+            <input class="form-control" id="courtship-percentiles" name="percentiles" value="<?= e($percentiles) ?>" required>
+            <div class="form-text"><?= I18N::translate('Comma-separated values from 0 to 100. Use a decimal point where needed. P90 is always included because it defines the courtship radius.') ?></div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label" for="courtship-sort"><?= I18N::translate('Cross-table sorting') ?></label>
+        <div class="col-sm-9">
+            <select class="form-select" id="courtship-sort" name="cross_table_sort">
+                <option value="frequency" <?= $cross_table_sort === 'frequency' ? 'selected' : '' ?>><?= I18N::translate('By frequency') ?></option>
+                <option value="alphabetical" <?= $cross_table_sort === 'alphabetical' ? 'selected' : '' ?>><?= I18N::translate('Alphabetical') ?></option>
+            </select>
+        </div>
+    </div>
+    <div class="row"><div class="offset-sm-3 col-sm-9"><button class="btn btn-primary" type="submit"><?= I18N::translate('save') ?></button></div></div>
+    <?= csrf_field() ?>
+</form>

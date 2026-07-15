@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\I18N;
+
+/** @var array<string,array<int,array{from:float,to:float|null,count:int}>> $histograms */
+?>
+<div class="row g-4 mt-1">
+<?php foreach (['M' => I18N::translate('Men'), 'F' => I18N::translate('Women')] as $sex => $label) : ?>
+    <?php $maximum = max(1, ...array_column($histograms[$sex], 'count')) ?>
+    <div class="col-lg-6">
+        <h4><?= $label ?> – <?= I18N::translate('Distribution') ?></h4>
+        <?php foreach ($histograms[$sex] as $bucket) : ?>
+            <?php if ($bucket['count'] === 0 && $bucket['from'] > 10) continue ?>
+            <div class="d-flex align-items-center gap-2 mb-1 small">
+                <span class="text-end" style="width:6rem"><?= e(I18N::number($bucket['from'], 0)) ?>–<?= $bucket['to'] === null ? '∞' : e(I18N::number($bucket['to'], 0)) ?> km</span>
+                <span class="bg-secondary" style="height:.8rem;width:<?= 100 * $bucket['count'] / $maximum ?>%;min-width:<?= $bucket['count'] > 0 ? '2px' : '0' ?>"></span>
+                <span><?= I18N::number($bucket['count']) ?></span>
+            </div>
+        <?php endforeach ?>
+    </div>
+<?php endforeach ?>
+</div>

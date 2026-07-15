@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\I18N;
+
+/** @var array<string,mixed> $table */
+?>
+<?php if ($table['rows'] === []) : ?>
+    <p><?= I18N::translate('Nothing to show') ?></p>
+<?php else : ?>
+<div class="table-responsive mb-4">
+    <table class="table table-bordered table-sm text-end">
+        <thead><tr><th class="text-start"><?= I18N::translate('Birth place') ?></th><?php foreach ($table['columns'] as $column) : ?><th><?= e($column) ?></th><?php endforeach ?><th><?= I18N::translate('Total') ?></th></tr></thead>
+        <tbody>
+        <?php foreach ($table['rows'] as $row) : ?><tr><th class="text-start"><?= e($row) ?></th><?php foreach ($table['columns'] as $column) : ?><td><?= isset($table['cells'][$row][$column]) ? I18N::number($table['cells'][$row][$column]) : '' ?></td><?php endforeach ?><th><?= I18N::number($table['rowTotals'][$row]) ?></th></tr><?php endforeach ?>
+        <tr><th class="text-start"><?= I18N::translate('Total') ?></th><?php foreach ($table['columns'] as $column) : ?><th><?= I18N::number($table['columnTotals'][$column]) ?></th><?php endforeach ?><th><?= I18N::number(array_sum($table['rowTotals'])) ?></th></tr>
+        </tbody>
+    </table>
+</div>
+<?php endif ?>

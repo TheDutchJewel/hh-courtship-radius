@@ -1,0 +1,69 @@
+<?php
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\I18N;
+
+/** @var array<int,array<string,mixed>> $series */
+
+$values = [];
+foreach ($series as $row) {
+    foreach (['M', 'F'] as $sex) {
+        $value = $row[$sex]['percentiles']['90'];
+        if ($value !== null) {
+            $values[] = $value;
+        }
+    }
+}
+$maximum = max(1.0, $values === [] ? 1.0 : max($values));
+$width = 920;
+$height = 320;
+$left = 60;
+$right = 20;
+$top = 20;
+$bottom = 55;
+$plotWidth = $width - $left - $right;
+$plotHeight = $height - $top - $bottom;
+$count = max(1, count($series));
+$x = static fn (int $index): float => $left + ($index + 0.5) * $plotWidth / $count;
+$y = static fn (float $value): float => $top + $plotHeight - $value / $maximum * $plotHeight;
+?>
+<div class="overflow-auto border rounded bg-body p-2">
+    <svg viewBox="0 0 <?= $width ?> <?= $height ?>" role="img" aria-label="<?= e(I18N::translate('Courtship radius over time')) ?>" style="min-width:720px;width:100%;height:auto">
+        <?php for ($tick = 0; $tick <= 4; $tick++) : ?>
+            <?php $value = $maximum * $tick / 4; $tickY = $y($value) ?>
+            <line x1="<?= $left ?>" y1="<?= $tickY ?>" x2="<?= $width - $right ?>" y2="<?= $tickY ?>" stroke="currentColor" opacity="0.15"/>
+            <text x="<?= $left - 8 ?>" y="<?= $tickY + 4 ?>" text-anchor="end" font-size="12" fill="currentColor"><?= e(I18N::number($value, 1)) ?></text>
+        <?php endfor ?>
+        <?php foreach ($series as $index => $row) : ?>
+            <text x="<?= $x($index) ?>" y="<?= $height - 25 ?>" text-anchor="middle" font-size="11" fill="currentColor"><?= e($row['label']) ?></text>
+        <?php endforeach ?>
+        <?php foreach (['M' => '#2563eb', 'F' => '#db2777'] as $sex => $color) : ?>
+            <?php
+            $segments = [];
+            $segment = [];
+            foreach ($series as $index => $row) {
+                $value = $row[$sex]['percentiles']['90'];
+                if ($value === null) {
+                    if ($segment !== []) {
+                        $segments[] = $segment;
+                        $segment = [];
+                    }
+                } else {
+                    $segment[] = [$x($index), $y($value), $value];
+                }
+            }
+            if ($segment !== []) {
+                $segments[] = $segment;
+            }
+            ?>
+            <?php foreach ($segments as $points) : ?>
+                <polyline fill="none" stroke="<?= $color ?>" stroke-width="3" points="<?= e(implode(' ', array_map(static fn (array $point): string => $point[0] . ',' . $point[1], $points))) ?>"/>
+                <?php foreach ($points as $point) : ?><circle cx="<?= $point[0] ?>" cy="<?= $point[1] ?>" r="4" fill="<?= $color ?>"><title><?= e(I18N::number($point[2], 1)) ?> km</title></circle><?php endforeach ?>
+            <?php endforeach ?>
+        <?php endforeach ?>
+        <circle cx="<?= $left ?>" cy="<?= $height - 6 ?>" r="5" fill="#2563eb"/><text x="<?= $left + 10 ?>" y="<?= $height - 2 ?>" font-size="12" fill="currentColor"><?= I18N::translate('Men') ?></text>
+        <circle cx="<?= $left + 80 ?>" cy="<?= $height - 6 ?>" r="5" fill="#db2777"/><text x="<?= $left + 90 ?>" y="<?= $height - 2 ?>" font-size="12" fill="currentColor"><?= I18N::translate('Women') ?></text>
+        <text transform="translate(14 <?= $top + $plotHeight / 2 ?>) rotate(-90)" text-anchor="middle" font-size="12" fill="currentColor"><?= I18N::translate('Kilometres (P90)') ?></text>
+    </svg>
+</div>
