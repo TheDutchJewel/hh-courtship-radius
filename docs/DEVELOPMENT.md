@@ -1,5 +1,7 @@
 # Development
 
+The design, data flow, and definitions of the calculated indicators are documented in [architecture.md](architecture.md).
+
 ## Working copy
 
 Keep the canonical Git working copy below `Documents/Codex/webtrees-modules` and expose it to the local webtrees test installation through an NTFS junction. Editing through either path changes the same files.

@@ -79,7 +79,7 @@ final class StatisticsService
      * @param array<float|int> $values
      * @return array<int,array{from:float,to:float|null,count:int}>
      */
-    public function histogram(array $values): array
+    public function histogram(array $values, float|null $sharedMaximum = null): array
     {
         $buckets = [];
 
@@ -87,12 +87,14 @@ final class StatisticsService
             $buckets[] = ['from' => (float) $from, 'to' => (float) ($from + 1), 'count' => 0];
         }
 
-        $maximum = $values === [] ? 10.0 : max(10.0, (float) max($values));
-        for ($from = 10; $from <= $maximum; $from += 5) {
+        $maximum = $sharedMaximum ?? ($values === [] ? 10.0 : (float) max($values));
+        $maximum = max(10.0, $maximum);
+        $upperLimit = ((int) floor($maximum / 5) + 1) * 5;
+        for ($from = 10; $from < $upperLimit; $from += 5) {
             $buckets[] = ['from' => (float) $from, 'to' => (float) ($from + 5), 'count' => 0];
         }
 
-        $buckets[] = ['from' => (float) (ceil($maximum / 5) * 5 + 5), 'to' => null, 'count' => 0];
+        $buckets[] = ['from' => (float) $upperLimit, 'to' => null, 'count' => 0];
 
         foreach ($values as $value) {
             $value = (float) $value;

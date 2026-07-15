@@ -45,6 +45,10 @@ $assert($statistics->percentile($values, 90.0) === 100.0, 'Nearest-rank P90');
 $summary = $statistics->summarize($values, [50.0, 90.0]);
 $assert($summary['count'] === 5, 'Statistics count');
 $assert($summary['percentiles']['90'] === 100.0, 'Statistics P90');
+$maleHistogram = $statistics->histogram([12.0], 17.0);
+$femaleHistogram = $statistics->histogram([17.0], 17.0);
+$assert(array_column($maleHistogram, 'from') === array_column($femaleHistogram, 'from'), 'Shared histogram buckets');
+$assert(array_sum(array_column($maleHistogram, 'count')) === 1, 'Histogram includes the shared range');
 
 $plan = (new TimeSliceService())->plan(1600, 1969);
 $assert($plan['width'] === 50, '370 years use 50-year slices');
@@ -58,11 +62,21 @@ $destination = new PlacePoint('B', 48.1, 11.1, 'test');
 $report = (new ReportService($statistics, new TimeSliceService()))->build([
     new CourtshipObservation('F1', 'I1', 'Man', 'M', 'I2', 'Woman', 1800, $origin, $destination, 'marriage_place', 10.0, null),
     new CourtshipObservation('F1', 'I2', 'Woman', 'F', 'I1', 'Man', 1800, $destination, $origin, 'partner_birth', 12.0, null),
+    new CourtshipObservation('F2', 'I3', 'Other man', 'M', 'I4', 'Other woman', 1825, $origin, $destination, 'marriage_place', 30.0, null),
+], [
+    ['family_xref' => 'F1', 'marriage_year' => 1800, 'first_name' => 'Man', 'second_name' => 'Woman', 'blood_relationship' => 'second cousins'],
+    ['family_xref' => 'F2', 'marriage_year' => 1810, 'first_name' => 'Other man', 'second_name' => 'Other woman', 'blood_relationship' => null],
+    ['family_xref' => 'F3', 'marriage_year' => 1900, 'first_name' => 'Later man', 'second_name' => 'Later woman', 'blood_relationship' => 'first cousins'],
 ], 1750, 1849, [50.0, 90.0], 'frequency');
-$assert($report['totals']['M']['percentiles']['90'] === 10.0, 'Male P90');
+$assert($report['totals']['M']['percentiles']['90'] === 30.0, 'Male P90');
 $assert($report['totals']['F']['percentiles']['90'] === 12.0, 'Female P90');
-$assert($report['cross_tables']['M']['cells']['A']['B'] === 1, 'Male cross table');
-$assert($report['map']['radii']['F'] === 12.0, 'Map reference radius');
+$assert($report['cross_tables']['M']['cells']['A']['B'] === 2, 'Male cross table');
+$assert($report['map']['reference_circles']['F']['radius'] === 12.0, 'Map reference radius');
+$assert($report['map']['reference_circles']['M']['radius'] === 20.0, 'Map reference radius averages time-slice P90 values');
+$assert($report['map']['reference_circles']['M']['center']['name'] === 'A', 'Map reference centre');
+$assert($report['consanguinity']['related_marriages'] === 1, 'Related marriage count');
+$assert($report['consanguinity']['total_marriages'] === 2, 'Total marriage count');
+$assert($report['consanguinity']['rate'] === 0.5, 'Consanguinity rate');
 
 if ($failures !== []) {
     foreach ($failures as $failure) {

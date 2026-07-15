@@ -107,7 +107,7 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
 
         $percentiles = $this->percentiles();
         $sort = $this->crossTableSort();
-        $report = $this->reportService->build($observations, $fromYear, $toYear, $percentiles, $sort);
+        $report = $this->reportService->build($observations, $analysis['marriages'], $fromYear, $toYear, $percentiles, $sort);
 
         $leafletConfig = null;
         $mapMessage = null;
@@ -117,10 +117,20 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
             $mapMessage = $exception->getMessage();
         }
 
+        $chartUrl = route('module', [
+            'module' => $this->name(),
+            'action' => 'Chart',
+            'tree'   => $tree->name(),
+        ]);
+        $chartQuery = [];
+        parse_str((string) parse_url($chartUrl, PHP_URL_QUERY), $chartQuery);
+
         return $this->viewResponse($this->name() . '::chart', [
             'title'           => $this->title(),
             'tree'            => $tree,
             'module'          => $this->name(),
+            'chart_url'       => explode('?', $chartUrl, 2)[0],
+            'chart_query'     => $chartQuery,
             'analysis'        => $analysis,
             'report'          => $report,
             'from_year'       => $fromYear,
@@ -149,17 +159,17 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
         $defaultFrom = $years === [] ? (int) date('Y') - 400 : min($years);
         $defaultTo = $years === [] ? (int) date('Y') : max($years);
         [$fromYear, $toYear] = $this->requestedYears($request, $defaultFrom, $defaultTo);
-        $report = $this->reportService->build($analysis['observations'], $fromYear, $toYear, $this->percentiles(), $this->crossTableSort());
+        $report = $this->reportService->build($analysis['observations'], $analysis['marriages'], $fromYear, $toYear, $this->percentiles(), $this->crossTableSort());
 
         $stream = fopen('php://temp', 'w+');
         fputcsv($stream, [
-            I18N::translate('Family'),
+            MoreI18N::xlate('Family'),
             I18N::translate('Person'),
-            I18N::translate('Sex'),
+            MoreI18N::xlate('Sex'),
             I18N::translate('Partner'),
             I18N::translate('Marriage year'),
             I18N::translate('Birth place'),
-            I18N::translate('Destination'),
+            MoreI18N::xlate('Destination'),
             I18N::translate('Destination source'),
             I18N::translate('Distance (km)'),
             I18N::translate('Blood relationship'),
@@ -183,7 +193,7 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
         fputcsv($stream, [I18N::translate('Statistics by period')]);
         $statisticsHeader = [
             I18N::translate('Period'),
-            I18N::translate('Sex'),
+            MoreI18N::xlate('Sex'),
             I18N::translate('Persons'),
             I18N::translate('Mean'),
             I18N::translate('Median'),
@@ -215,7 +225,7 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
             $table = $report['cross_tables'][$sex];
             fputcsv($stream, []);
             fputcsv($stream, [I18N::translate('Cross table') . ' – ' . $label]);
-            fputcsv($stream, array_merge([I18N::translate('Birth place')], $table['columns'], [I18N::translate('Total')]));
+            fputcsv($stream, array_merge([I18N::translate('Birth place')], $table['columns'], [MoreI18N::xlate('Total')]));
             foreach ($table['rows'] as $rowName) {
                 $csvRow = [$rowName];
                 foreach ($table['columns'] as $columnName) {
@@ -256,12 +266,26 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
 
         $this->setPreference('PERCENTILES', implode(',', array_map($this->formatPercentile(...), $percentiles)));
         $this->setPreference('CROSS_TABLE_SORT', $sort);
-        FlashMessages::addMessage(I18N::translate('The preferences for the module “%s” have been updated.', $this->title()), 'success');
+        FlashMessages::addMessage(MoreI18N::xlate('The preferences for the module “%s” have been updated.', $this->title()), 'success');
 
         return redirect($this->getConfigLink());
     }
 
-    /** @return array<string,array<int,array<string,string>>> */
+    /**
+     * @return array{
+     *     third_party_services:list<array{
+     *         service_id:string,
+     *         name:string,
+     *         url:string,
+     *         country:string,
+     *         privacy_url:string,
+     *         data:list<string>,
+     *         description:string,
+     *         group:string
+     *     }>,
+     *     security_measures:list<string>
+     * }
+     */
     public function privacyNotices(): array
     {
         $services = [];
@@ -273,7 +297,7 @@ final class CourtshipRadiusModule extends AbstractModule implements ModuleCustom
                 'url'         => $details['url'],
                 'country'     => $details['country'],
                 'privacy_url' => $details['privacy_url'],
-                'data'        => I18N::translate('IP address, browser data, requested map area'),
+                'data'        => [I18N::translate('IP address, browser data, requested map area')],
                 'description' => I18N::translate('This module uses the map provider enabled in webtrees to display places and movement routes.'),
                 'group'       => 'map',
             ];

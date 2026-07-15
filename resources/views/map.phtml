@@ -12,12 +12,12 @@ $mapId = 'courtship-radius-map-' . bin2hex(random_bytes(4));
 $controlId = $mapId . '-radius-controls';
 ?>
 <div id="<?= e($controlId) ?>" class="btn-group btn-group-sm mb-2" role="group" aria-label="<?= e(I18N::translate('Reference circle')) ?>">
-    <button class="btn btn-outline-primary" type="button" data-sex="M" <?= $data['radii']['M'] === null ? 'disabled' : '' ?>><?= I18N::translate('Men’s P90 circle') ?></button>
-    <button class="btn btn-outline-danger" type="button" data-sex="F" <?= $data['radii']['F'] === null ? 'disabled' : '' ?>><?= I18N::translate('Women’s P90 circle') ?></button>
+    <button class="btn btn-outline-primary" type="button" data-sex="M" <?= $data['reference_circles']['M'] === null ? 'disabled' : '' ?>><?= I18N::translate('Men’s P90 circle') ?></button>
+    <button class="btn btn-outline-danger" type="button" data-sex="F" <?= $data['reference_circles']['F'] === null ? 'disabled' : '' ?>><?= I18N::translate('Women’s P90 circle') ?></button>
     <button class="btn btn-outline-secondary" type="button" data-sex=""><?= I18N::translate('Remove circle') ?></button>
 </div>
 <div id="<?= e($mapId) ?>" class="wt-map border rounded" dir="ltr" style="height:36rem"></div>
-<p class="small text-muted mt-2"><?= I18N::translate('Blue routes represent men; pink routes represent women. The line width and number show the number of persons. Select a P90 circle and then click its reference point on the map.') ?></p>
+<p class="small text-muted mt-2"><?= I18N::translate('Blue routes represent men; pink routes represent women. The line width and number show the number of persons. Each P90 circle is centred on the most frequent birth place for that group; its radius is the mean of the available time-slice P90 values.') ?></p>
 
 <?php View::push('javascript') ?>
 <script>
@@ -33,27 +33,32 @@ $controlId = $mapId . '-radius-controls';
   const layers = L.featureGroup().addTo(map);
   const color = sex => sex === 'M' ? '#2563eb' : '#db2777';
   const escapeHtml = value => String(value).replace(/[&<>'"]/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character]));
-  let selectedRadiusSex = '';
   let radiusCircle = null;
 
   controls.addEventListener('click', event => {
     const button = event.target.closest('[data-sex]');
     if (!button) return;
-    selectedRadiusSex = button.dataset.sex;
+    const sex = button.dataset.sex;
     controls.querySelectorAll('[data-sex]').forEach(item => item.classList.remove('active'));
     button.classList.add('active');
-    if (selectedRadiusSex === '' && radiusCircle !== null) {
+    if (radiusCircle !== null) {
       radiusCircle.remove();
       radiusCircle = null;
     }
-  });
 
-  map.on('click', event => {
-    if (!selectedRadiusSex || data.radii[selectedRadiusSex] === null) return;
-    if (radiusCircle !== null) radiusCircle.remove();
-    const kilometres = data.radii[selectedRadiusSex];
-    radiusCircle = L.circle(event.latlng, {radius: kilometres * 1000, color: color(selectedRadiusSex), fillOpacity: .08})
-      .bindTooltip(`P90: ${kilometres.toFixed(1)} km`).addTo(map);
+    if (sex === '') {
+      if (layers.getLayers().length) map.fitBounds(layers.getBounds(), {padding: [30, 30], maxZoom: 14});
+      return;
+    }
+
+    const reference = data.reference_circles[sex];
+    if (reference === null) return;
+    const centre = [reference.center.latitude, reference.center.longitude];
+    const radiusLabel = reference.radius.toLocaleString(document.documentElement.lang || undefined, {maximumFractionDigits: 1});
+    radiusCircle = L.circle(centre, {radius: reference.radius * 1000, color: color(sex), fillOpacity: .08})
+      .bindTooltip(`${escapeHtml(reference.center.name)} (n=${reference.person_count}): P90 ${radiusLabel} km`)
+      .addTo(map);
+    map.fitBounds(radiusCircle.getBounds(), {padding: [30, 30]});
   });
 
   data.routes.forEach(route => {

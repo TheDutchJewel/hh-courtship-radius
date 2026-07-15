@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Tree;
+use Fisharebest\Webtrees\View;
+use Hartenthaler\Webtrees\Module\CourtshipRadiusModule\MoreI18N;
 
 /**
  * @var array<string,mixed> $analysis
+ * @var array<string,string> $chart_query
+ * @var string              $chart_url
  * @var string              $csv_url
  * @var int                 $from_year
  * @var object|null         $leaflet_config
@@ -20,6 +24,9 @@ use Fisharebest\Webtrees\Tree;
  */
 
 $format = static fn (float|null $value): string => $value === null ? '–' : I18N::number($value, 1);
+$displayPercentiles = array_values(array_filter($percentiles, static fn (float $percentile): bool => $percentile !== 50.0));
+$percentileKey = static fn (float $percentile): string => rtrim(rtrim(number_format($percentile, 2, '.', ''), '0'), '.');
+$qualityTableId = 'courtship-radius-quality-' . bin2hex(random_bytes(4));
 $destinationLabels = [
     'partner_residence' => I18N::translate('Partner’s residence at marriage'),
     'marriage_place'    => I18N::translate('Marriage place'),
@@ -40,10 +47,10 @@ $reasonLabels = [
 <?php if ($analysis['selected_families'] === 0) : ?>
     <div class="alert alert-info"><?= I18N::translate('First add the families and individuals to be analysed to the Clippings Cart.') ?></div>
 <?php else : ?>
-    <form method="get" class="wt-page-options d-print-none mb-4">
-        <input type="hidden" name="module" value="<?= e($module) ?>">
-        <input type="hidden" name="action" value="Chart">
-        <input type="hidden" name="tree" value="<?= e($tree->name()) ?>">
+    <form method="get" action="<?= e($chart_url) ?>" class="wt-page-options d-print-none mb-4">
+        <?php foreach ($chart_query as $name => $value) : ?>
+            <input type="hidden" name="<?= e($name) ?>" value="<?= e($value) ?>">
+        <?php endforeach ?>
         <div class="row g-3 align-items-end">
             <div class="col-sm-4">
                 <label class="form-label" for="courtship-from"><?= I18N::translate('From year') ?></label>
@@ -54,8 +61,8 @@ $reasonLabels = [
                 <input class="form-control" id="courtship-to" name="to" type="number" value="<?= $to_year ?>" required>
             </div>
             <div class="col-sm-4">
-                <button class="btn btn-primary" type="submit"><?= I18N::translate('view') ?></button>
-                <a class="btn btn-secondary" href="<?= e($csv_url) ?>"><?= I18N::translate('Download CSV') ?></a>
+                <button class="btn btn-primary" type="submit"><?= MoreI18N::xlate('view') ?></button>
+                <a class="btn btn-secondary" href="<?= e($csv_url) ?>"><?= I18N::translate('Download cross table as CSV') ?></a>
             </div>
         </div>
     </form>
@@ -97,11 +104,11 @@ $reasonLabels = [
             <h3><?= I18N::translate('Statistics for the selected period') ?></h3>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm text-end">
-                    <thead><tr><th class="text-start"><?= I18N::translate('Group') ?></th><th><?= I18N::translate('Persons') ?></th><th><?= I18N::translate('Mean') ?></th><th><?= I18N::translate('Median') ?></th><th><?= I18N::translate('Standard deviation') ?></th><?php foreach ($percentiles as $percentile) : ?><th>P<?= e(rtrim(rtrim(number_format($percentile, 2, '.', ''), '0'), '.')) ?></th><?php endforeach ?></tr></thead>
+                    <thead><tr><th class="text-start"><?= I18N::translate('Group') ?></th><th><?= I18N::translate('Persons') ?></th><th><?= I18N::translate('Mean') ?></th><th><?= I18N::translate('Standard deviation') ?></th><?php foreach ($displayPercentiles as $percentile) : ?><th>P<?= e($percentileKey($percentile)) ?></th><?php endforeach ?></tr></thead>
                     <tbody>
                     <?php foreach (['M' => I18N::translate('Men'), 'F' => I18N::translate('Women')] as $sex => $label) : ?>
                         <?php $statistics = $report['totals'][$sex] ?>
-                        <tr><th class="text-start"><?= $label ?></th><td><?= I18N::number($statistics['count']) ?></td><td><?= $format($statistics['mean']) ?> km</td><td><?= $format($statistics['median']) ?> km</td><td><?= $format($statistics['standard_deviation']) ?> km</td><?php foreach ($statistics['percentiles'] as $value) : ?><td><?= $format($value) ?> km</td><?php endforeach ?></tr>
+                        <tr><th class="text-start"><?= $label ?></th><td><?= I18N::number($statistics['count']) ?></td><td><?= $format($statistics['mean']) ?> km</td><td><?= $format($statistics['standard_deviation']) ?> km</td><?php foreach ($displayPercentiles as $percentile) : ?><td><?= $format($statistics['percentiles'][$percentileKey($percentile)]) ?> km</td><?php endforeach ?></tr>
                     <?php endforeach ?>
                     </tbody>
                 </table>
@@ -110,11 +117,13 @@ $reasonLabels = [
         </section>
 
         <section class="mb-5">
-            <h3><?= I18N::translate('Birth place × destination') ?></h3>
+            <h3><?= I18N::translate('Birth place × marriage place') ?></h3>
             <p class="text-muted"><?= I18N::translate('Each cell contains the number of evaluated persons.') ?></p>
             <?php foreach (['M' => I18N::translate('Men'), 'F' => I18N::translate('Women')] as $sex => $label) : ?>
-                <h4><?= $label ?></h4>
-                <?= view($module . '::cross-table', ['table' => $report['cross_tables'][$sex]]) ?>
+                <details class="mb-3">
+                    <summary class="h4 mb-2"><?= $label ?></summary>
+                    <?= view($module . '::cross-table', ['table' => $report['cross_tables'][$sex]]) ?>
+                </details>
             <?php endforeach ?>
         </section>
 
@@ -128,7 +137,14 @@ $reasonLabels = [
             <?php if ($report['blood_relationships'] === []) : ?>
                 <p><?= I18N::translate('No blood relationship was found for the evaluated couples.') ?></p>
             <?php else : ?>
-                <div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th><?= I18N::translate('Family') ?></th><th><?= I18N::translate('Couple') ?></th><th><?= I18N::translate('Nearest blood relationship') ?></th></tr></thead><tbody>
+                <p>
+                    <?= I18N::translate(
+                        'The estimated <strong>consanguinity rate</strong> is %s.',
+                        I18N::percentage($report['consanguinity']['rate'], 2),
+                    ) ?>
+                    <?= I18N::translate('The figure is calculated by dividing the number of marriages between blood relatives by the total number of marriages present.') ?>
+                </p>
+                <div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th><?= MoreI18N::xlate('Family') ?></th><th><?= I18N::translate('Couple') ?></th><th><?= I18N::translate('Nearest blood relationship') ?></th></tr></thead><tbody>
                 <?php foreach ($report['blood_relationships'] as $relationship) : ?><tr><td><?= e($relationship['family_xref']) ?></td><td><?= e($relationship['first_name']) ?> / <?= e($relationship['second_name']) ?></td><td><?= e($relationship['relationship']) ?></td></tr><?php endforeach ?>
                 </tbody></table></div>
             <?php endif ?>
@@ -139,16 +155,50 @@ $reasonLabels = [
         <h3><?= I18N::translate('Data quality') ?></h3>
         <p><?= I18N::translate('%1$s families and %2$s individuals were selected; %3$s observations are evaluable and %4$s cases were excluded.', I18N::number($analysis['selected_families']), I18N::number($analysis['selected_individuals']), I18N::number(count($analysis['observations'])), I18N::number(count($analysis['excluded']))) ?></p>
         <?php if ($analysis['excluded'] !== []) : ?>
-            <div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th><?= I18N::translate('Family') ?></th><th><?= I18N::translate('Person') ?></th><th><?= I18N::translate('Reason') ?></th></tr></thead><tbody>
-            <?php foreach ($analysis['excluded'] as $excluded) : ?><tr><td><?= e($excluded['family_xref']) ?></td><td><?= e($excluded['subject_xref']) ?></td><td><?= $reasonLabels[$excluded['reason']] ?? e($excluded['reason']) ?></td></tr><?php endforeach ?>
-            </tbody></table></div>
+            <details class="mt-3">
+                <summary><?= I18N::translate('Excluded cases') ?> (<?= I18N::number(count($analysis['excluded'])) ?>)</summary>
+                <div class="table-responsive mt-2"><table id="<?= e($qualityTableId) ?>" class="table table-bordered table-sm"><thead><tr>
+                    <th><button class="btn btn-link p-0 text-decoration-none" type="button" data-courtship-sort="0"><?= MoreI18N::xlate('Family') ?> ↕</button></th>
+                    <th><button class="btn btn-link p-0 text-decoration-none" type="button" data-courtship-sort="1"><?= I18N::translate('Person') ?> ↕</button></th>
+                    <th><button class="btn btn-link p-0 text-decoration-none" type="button" data-courtship-sort="2"><?= I18N::translate('Reason') ?> ↕</button></th>
+                </tr></thead><tbody>
+                <?php foreach ($analysis['excluded'] as $excluded) : ?><tr><td data-sort="<?= e($excluded['family_xref']) ?>"><?= e($excluded['family_xref']) ?></td><td data-sort="<?= e($excluded['subject_xref']) ?>"><?= e($excluded['subject_xref']) ?></td><td data-sort="<?= e(strip_tags($reasonLabels[$excluded['reason']] ?? $excluded['reason'])) ?>"><?= $reasonLabels[$excluded['reason']] ?? e($excluded['reason']) ?></td></tr><?php endforeach ?>
+                </tbody></table></div>
+            </details>
         <?php endif ?>
 
         <details class="mt-3">
             <summary><?= I18N::translate('Evaluated observations') ?></summary>
-            <div class="table-responsive mt-2"><table class="table table-bordered table-sm"><thead><tr><th><?= I18N::translate('Person') ?></th><th><?= I18N::translate('Marriage year') ?></th><th><?= I18N::translate('Birth place') ?></th><th><?= I18N::translate('Destination') ?></th><th><?= I18N::translate('Source') ?></th><th><?= I18N::translate('Distance') ?></th></tr></thead><tbody>
+            <div class="table-responsive mt-2"><table class="table table-bordered table-sm"><thead><tr><th><?= I18N::translate('Person') ?></th><th><?= I18N::translate('Marriage year') ?></th><th><?= I18N::translate('Birth place') ?></th><th><?= MoreI18N::xlate('Destination') ?></th><th><?= MoreI18N::xlate('Source') ?></th><th><?= I18N::translate('Distance') ?></th></tr></thead><tbody>
             <?php foreach ($report['observations'] as $observation) : ?><tr><td><?= e($observation->subjectName) ?> (<?= e($observation->subjectXref) ?>)</td><td><?= $observation->marriageYear ?></td><td><?= e($observation->origin->name) ?></td><td><?= e($observation->destination->name) ?></td><td><?= $destinationLabels[$observation->destinationKind] ?? e($observation->destinationKind) ?></td><td class="text-end"><?= $format($observation->distance) ?> km</td></tr><?php endforeach ?>
             </tbody></table></div>
         </details>
     </section>
+<?php endif ?>
+
+<?php if ($analysis['excluded'] !== []) : ?>
+    <?php View::push('javascript') ?>
+    <script>
+    document.querySelectorAll('#<?= e($qualityTableId) ?> [data-courtship-sort]').forEach(button => {
+      button.addEventListener('click', () => {
+        const table = document.getElementById(<?= json_encode($qualityTableId, JSON_THROW_ON_ERROR) ?>);
+        const tbody = table.querySelector('tbody');
+        const column = Number(button.dataset.courtshipSort);
+        const ascending = button.dataset.sortDirection !== 'asc';
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        rows.sort((left, right) => {
+          const leftValue = left.children[column].dataset.sort || left.children[column].textContent.trim();
+          const rightValue = right.children[column].dataset.sort || right.children[column].textContent.trim();
+          const result = leftValue.localeCompare(rightValue, document.documentElement.lang || undefined, {numeric: true, sensitivity: 'base'});
+          return ascending ? result : -result;
+        });
+
+        table.querySelectorAll('[data-courtship-sort]').forEach(item => delete item.dataset.sortDirection);
+        button.dataset.sortDirection = ascending ? 'asc' : 'desc';
+        rows.forEach(row => tbody.appendChild(row));
+      });
+    });
+    </script>
+    <?php View::endpush() ?>
 <?php endif ?>

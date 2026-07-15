@@ -5,20 +5,32 @@ declare(strict_types=1);
 use Fisharebest\Webtrees\I18N;
 
 /** @var array<string,array<int,array{from:float,to:float|null,count:int}>> $histograms */
+
+$maximum = max(
+    1,
+    max(array_column($histograms['M'], 'count')),
+    max(array_column($histograms['F'], 'count')),
+);
 ?>
-<div class="row g-4 mt-1">
-<?php foreach (['M' => I18N::translate('Men'), 'F' => I18N::translate('Women')] as $sex => $label) : ?>
-    <?php $maximum = max(1, ...array_column($histograms[$sex], 'count')) ?>
-    <div class="col-lg-6">
-        <h4><?= $label ?> – <?= I18N::translate('Distribution') ?></h4>
-        <?php foreach ($histograms[$sex] as $bucket) : ?>
-            <?php if ($bucket['count'] === 0 && $bucket['from'] > 10) continue ?>
-            <div class="d-flex align-items-center gap-2 mb-1 small">
-                <span class="text-end" style="width:6rem"><?= e(I18N::number($bucket['from'], 0)) ?>–<?= $bucket['to'] === null ? '∞' : e(I18N::number($bucket['to'], 0)) ?> km</span>
-                <span class="bg-secondary" style="height:.8rem;width:<?= 100 * $bucket['count'] / $maximum ?>%;min-width:<?= $bucket['count'] > 0 ? '2px' : '0' ?>"></span>
-                <span><?= I18N::number($bucket['count']) ?></span>
-            </div>
-        <?php endforeach ?>
+<div class="mt-4">
+    <h4><?= I18N::translate('Men/Women – Distribution') ?></h4>
+    <div class="d-flex gap-4 small mb-2">
+        <span><span class="d-inline-block me-1" style="width:.9rem;height:.7rem;background:#2563eb"></span><?= I18N::translate('Men') ?></span>
+        <span><span class="d-inline-block me-1" style="width:.9rem;height:.7rem;background:#dc2626"></span><?= I18N::translate('Women') ?></span>
     </div>
-<?php endforeach ?>
+    <?php foreach ($histograms['M'] as $index => $bucket) : ?>
+        <?php $femaleBucket = $histograms['F'][$index] ?>
+        <?php if ($bucket['count'] === 0 && $femaleBucket['count'] === 0 && $bucket['from'] > 10) continue ?>
+        <div class="d-flex align-items-center gap-2 mb-2 small">
+            <span class="text-end flex-shrink-0" style="width:6rem"><?= e(I18N::number($bucket['from'], 0)) ?>–<?= $bucket['to'] === null ? '∞' : e(I18N::number($bucket['to'], 0)) ?> km</span>
+            <div class="flex-grow-1">
+                <?php foreach ([['count' => $bucket['count'], 'color' => '#2563eb'], ['count' => $femaleBucket['count'], 'color' => '#dc2626']] as $bar) : ?>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span style="display:inline-block;height:.7rem;background:<?= $bar['color'] ?>;width:<?= 100 * $bar['count'] / $maximum ?>%;min-width:<?= $bar['count'] > 0 ? '2px' : '0' ?>"></span>
+                        <span class="flex-shrink-0"><?= I18N::number($bar['count']) ?></span>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        </div>
+    <?php endforeach ?>
 </div>
