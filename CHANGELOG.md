@@ -2,6 +2,10 @@
 
 ## Next release
 
+- No changes yet.
+
+## 0.1.0 - 2026-07-15
+
 - Initial functional implementation of the courtship-radius chart.
 - Analyse only families and spouse individuals explicitly selected in the tree-specific Clippings Cart.
 - Apply the prioritised birthplace-to-residence, marriage-place, and partner-birthplace distance rule.

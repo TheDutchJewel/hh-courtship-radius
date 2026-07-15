@@ -1,5 +1,9 @@
 # Courtship radius for webtrees
 
+[![Latest release](https://img.shields.io/github/v/release/hartenthaler/hh-courtship-radius?label=release)](https://github.com/hartenthaler/hh-courtship-radius/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/hartenthaler/hh-courtship-radius/total)](https://github.com/hartenthaler/hh-courtship-radius/releases)
+[![Quality](https://github.com/hartenthaler/hh-courtship-radius/actions/workflows/quality.yml/badge.svg)](https://github.com/hartenthaler/hh-courtship-radius/actions/workflows/quality.yml)
+
 `hh-courtship-radius` is a webtrees 2.2 custom module for analysing the geographic courtship radius of families selected through the tree-specific Clippings Cart.
 
 For each selected spouse, the module uses exactly one distance according to this priority:
@@ -24,7 +28,7 @@ Only FAM records and spouse INDI records explicitly present in the current treeâ
 
 ## Status
 
-Version 0.1.0 is under active development. The first functional implementation is available on the development branch and will be released after integration testing.
+The current stable release is version 0.1.0.
 
 ## Requirements
 
